@@ -35,5 +35,8 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
     "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "prisma": "^5.4.1"
   }
 }
