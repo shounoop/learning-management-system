@@ -54,6 +54,8 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
 		course.imageUrl,
 		course.price,
 		course.categoryId,
+
+		// Check if at least one chapter is published
 		course.chapters.some((chapter) => chapter.isPublished),
 	];
 

@@ -13,13 +13,14 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import { PlusCircle } from 'lucide-react';
+import { Loader2, PlusCircle } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Chapter, Course } from '@prisma/client';
 import { Input } from '@/components/ui/input';
+import { ChaptersList } from './chapters-list';
 
 interface ChaptersFormProps {
 	initialData: Course & { chapters: Chapter[] };
@@ -32,6 +33,7 @@ const formSchema = z.object({
 
 const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
 	const [isCreating, setIsCreating] = useState(false);
+	const [isUpdating, setIsUpdating] = useState(false);
 
 	const toggleCreating = () => setIsCreating((prev) => !prev);
 
@@ -58,8 +60,35 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
 		}
 	};
 
+	const onReorder = async (updateData: { id: string; position: number }[]) => {
+		try {
+			setIsUpdating(true);
+
+			await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
+				list: updateData,
+			});
+
+			toast.success('Chapters reordered');
+			router.refresh();
+		} catch {
+			toast.error('Something went wrong');
+		} finally {
+			setIsUpdating(false);
+		}
+	};
+
+	const onEdit = (id: string) => {
+		router.push(`/teacher/courses/${courseId}/chapters/${id}`);
+	};
+
 	return (
-		<div className="mt-6 border bg-slate-100 rounded-md p-4">
+		<div className="relative mt-6 border bg-slate-100 rounded-md p-4">
+			{isUpdating && (
+				<div className="absolute h-full w-full bg-slate-500/20 top-0 right-0 rounded-md flex items-center justify-center">
+					<Loader2 className="animate-spin h-6 w-6 text-sky-700" />
+				</div>
+			)}
+
 			<div className="font-medium flex items-center justify-between">
 				Course chapters
 				<Button variant={'ghost'} onClick={toggleCreating}>
@@ -113,7 +142,11 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
 					)}
 				>
 					{!initialData.chapters.length && 'No chapters yet'}
-					{/* TODO: Add a list of chapters */}
+					<ChaptersList
+						onEdit={onEdit}
+						onReorder={onReorder}
+						items={initialData.chapters || []}
+					/>
 				</div>
 			)}
 

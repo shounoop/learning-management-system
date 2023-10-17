@@ -11,6 +11,7 @@
 	},
 	"dependencies": {
 		"@clerk/nextjs": "^4.25.3",
+		"@hello-pangea/dnd": "^16.3.0",
 		"@hookform/resolvers": "^3.3.1",
 		"@prisma/client": "^5.4.2",
 		"@radix-ui/react-dialog": "^1.0.5",
@@ -29,7 +30,7 @@
 		"eslint": "8.50.0",
 		"eslint-config-next": "13.5.4",
 		"lucide-react": "^0.284.0",
-		"next": "13.5.4",
+		"next": "^13.5.5",
 		"postcss": "8.4.31",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
