@@ -136,6 +136,7 @@ export function DataTable<TData, TValue>({
 				>
 					Previous
 				</Button>
+
 				<Button
 					variant="outline"
 					size="sm"
