@@ -48,7 +48,7 @@ const VideoPlayer = ({
 					className={cn(!isReady && 'hidden')}
 					onCanPlay={() => setIsReady(true)}
 					onEnded={() => {}}
-					autoPlay
+					autoPlay={false}
 					playbackId={playbackId}
 				/>
 			)}
