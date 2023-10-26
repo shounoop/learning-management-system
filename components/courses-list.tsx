@@ -13,7 +13,7 @@ const CoursesList = ({ items }: CoursesListProps) => {
 					<CourseCard
 						key={item.id}
 						id={item.id}
-						title={item.id}
+						title={item.title}
 						imageUrl={item.imageUrl!}
 						chaptersLength={item.chapters.length}
 						price={item.price!}
