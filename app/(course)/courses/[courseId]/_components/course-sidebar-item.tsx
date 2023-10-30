@@ -52,7 +52,7 @@ const CourseSidebarItem = ({
 					)}
 				/>
 
-				{label}
+				<p className='text-left'>{label}</p>
 			</div>
 
 			<div
