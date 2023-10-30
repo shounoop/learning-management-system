@@ -55,8 +55,6 @@ export async function POST(
 			select: { stripeCustomerId: true },
 		});
 
-		console.log('stripeCustomer', stripeCustomer);
-
 		if (!stripeCustomer) {
 			const customer = await stripe.customers.create({
 				email: user.emailAddresses?.[0].emailAddress,
@@ -74,8 +72,8 @@ export async function POST(
 			customer: stripeCustomer.stripeCustomerId,
 			line_items: lineItems,
 			mode: 'payment',
-			success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/courses/${course.id}?success=1`,
-			cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/courses/${course.id}?canceled=1`,
+			success_url: `${process.env.NEXT_PUBLIC_APP_URL}/courses/${course.id}?success=1`,
+			cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/courses/${course.id}?canceled=1`,
 			metadata: {
 				courseId: course.id,
 				userId: user.id,
@@ -84,10 +82,7 @@ export async function POST(
 
 		return NextResponse.json({ url: session.url });
 	} catch (error) {
-		console.log(
-			'[ERROR] POST /api/courses/[courseId]/checkout/route.ts',
-			error
-		);
+		console.log('[ERROR] POST /api/courses/[courseId]/checkout/route.ts');
 
 		return new NextResponse('Internal server error', { status: 500 });
 	}

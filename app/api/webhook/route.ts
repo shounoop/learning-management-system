@@ -39,9 +39,7 @@ export async function POST(req: Request) {
 	} else {
 		return new NextResponse(
 			`Webhook Error: Unhandled event type: ${event.type}`,
-			{
-				status: 200,
-			}
+			{ status: 200 }
 		);
 	}
 
