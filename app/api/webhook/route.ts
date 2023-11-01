@@ -7,6 +7,7 @@ import { db } from '@/lib/db';
 export async function POST(req: Request) {
 	const body = await req.text();
 
+	// this means that the request is coming from Stripe and not from a user on our site (i.e. a hacker)
 	const signature = headers().get('Stripe-Signature') as string;
 
 	let event: Stripe.Event;

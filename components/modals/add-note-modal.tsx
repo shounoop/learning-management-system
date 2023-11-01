@@ -5,31 +5,41 @@ import {
 	AlertDialogAction,
 	AlertDialogCancel,
 	AlertDialogContent,
-	AlertDialogDescription,
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-	AlertDialogTrigger,
+	AlertDialogTrigger,	
 } from '@/components/ui/alert-dialog';
 
-interface ConfirmModalProps {
+import { useState } from 'react';
+import { Editor } from '@/components/editor';
+
+interface AddNoteModalProps {
 	children: React.ReactNode;
 	onConfirm: () => void;
 }
 
-const ConfirmModal = ({ children, onConfirm }: ConfirmModalProps) => {
+const AddNoteModal = ({ children, onConfirm }: AddNoteModalProps) => {
+	const [value, setValue] = useState('');
+
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
 
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>Are you sure?</AlertDialogTitle>
-
-					<AlertDialogDescription>
-						This action cannot be undone.
-					</AlertDialogDescription>
+					<AlertDialogTitle>Add new note</AlertDialogTitle>
 				</AlertDialogHeader>
+
+				<div className="mt-6 border bg-slate-100 rounded-md p-4">
+					<div className="font-medium flex items-center justify-between">
+						Your note
+					</div>
+
+					<div className="pt-4">
+						<Editor value={value} onChange={(value) => setValue(value)} />
+					</div>
+				</div>
 
 				<AlertDialogFooter>
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -41,4 +51,4 @@ const ConfirmModal = ({ children, onConfirm }: ConfirmModalProps) => {
 	);
 };
 
-export default ConfirmModal;
+export default AddNoteModal;

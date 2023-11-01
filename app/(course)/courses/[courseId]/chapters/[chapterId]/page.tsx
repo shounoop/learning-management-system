@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Preview } from '@/components/preview';
 import { File } from 'lucide-react';
 import CourseProgressButton from './_components/course-progress-button';
+import Notes from './_components/notes';
 
 const ChapterIdPage = async ({
 	params,
@@ -96,7 +97,7 @@ const ChapterIdPage = async ({
 						<>
 							<Separator />
 
-							<div>
+							<div className="mt-4">
 								{attachments.map((attachment) => (
 									<a
 										href={attachment.url}
@@ -112,6 +113,8 @@ const ChapterIdPage = async ({
 							</div>
 						</>
 					)}
+
+					<Notes />
 				</div>
 			</div>
 		</div>
