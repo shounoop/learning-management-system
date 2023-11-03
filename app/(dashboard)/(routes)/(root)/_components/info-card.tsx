@@ -15,7 +15,7 @@ const InfoCard = ({
 	numberOfItems,
 }: InfoCardProps) => {
 	return (
-		<div className="border rounded-md flex items-center gap-x-2 p-3">
+		<div className="border rounded-md flex items-center gap-x-2 p-3 mb-4">
 			<IconBadge icon={Icon} variant={variant} />
 
 			<div>
