@@ -7,7 +7,7 @@ import DashboardForm from './_components/dashboard-form';
 const Personalization = () => {
 	return (
 		<div className="p-6 space-y-4">
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 				<div>
 					<div className="flex items-center gap-x-2">
 						<IconBadge icon={LayoutDashboard} />
