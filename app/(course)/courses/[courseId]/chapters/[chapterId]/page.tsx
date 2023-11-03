@@ -114,7 +114,13 @@ const ChapterIdPage = async ({
 						</>
 					)}
 
-					<Notes />
+					{!isLocked && (
+						<Notes
+							courseId={params.courseId}
+							chapterId={params.chapterId}
+							userId={userId}
+						/>
+					)}
 				</div>
 			</div>
 		</div>
