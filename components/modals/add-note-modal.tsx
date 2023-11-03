@@ -1,5 +1,3 @@
-'use client';
-
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -8,7 +6,7 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-	AlertDialogTrigger,	
+	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
 import { useState } from 'react';
@@ -16,12 +14,17 @@ import { Editor } from '@/components/editor';
 
 interface AddNoteModalProps {
 	children: React.ReactNode;
-	onConfirm: () => void;
+	content: string;
+	setContent: (content: string) => void;
+	onAdd: () => void;
 }
 
-const AddNoteModal = ({ children, onConfirm }: AddNoteModalProps) => {
-	const [value, setValue] = useState('');
-
+const AddNoteModal = ({
+	children,
+	content,
+	setContent,
+	onAdd,
+}: AddNoteModalProps) => {
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -37,14 +40,14 @@ const AddNoteModal = ({ children, onConfirm }: AddNoteModalProps) => {
 					</div>
 
 					<div className="pt-4">
-						<Editor value={value} onChange={(value) => setValue(value)} />
+						<Editor value={content} onChange={(value) => setContent(value)} />
 					</div>
 				</div>
 
 				<AlertDialogFooter>
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
 
-					<AlertDialogAction onClick={onConfirm}>Continue</AlertDialogAction>
+					<AlertDialogAction onClick={onAdd}>Add new note</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>
