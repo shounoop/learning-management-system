@@ -1,15 +1,23 @@
 import { CourseWithProgressWithCategory } from '@/actions/get-courses';
 import CourseCard from '@/components/course-card';
+import { cn } from '@/lib/utils';
 
 interface CoursesListProps {
 	items: CourseWithProgressWithCategory[];
+	size?: 'sm' | 'md' | 'lg';
 }
 
-const CoursesList = ({ items }: CoursesListProps) => {
+const CoursesList = ({ items, size }: CoursesListProps) => {
 	return (
 		<div>
-			<div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 gap-4">
-			{/* <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4"> */}
+			<div
+				className={cn(
+					'grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 gap-4',
+					size === 'sm' &&
+						'grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4'
+				)}
+			>
+				{/* <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4"> */}
 				{items.map((item) => (
 					<CourseCard
 						key={item.id}

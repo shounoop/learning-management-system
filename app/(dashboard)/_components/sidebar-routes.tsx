@@ -1,11 +1,11 @@
 // use client to avoid SSR error
 'use client';
 
-import { BarChart, Compass, Layout, List } from 'lucide-react';
+import { ActivitySquare, BarChart, Compass, Heart, Layout, List } from 'lucide-react';
 import SidebarItem from './sidebar-item';
 import { usePathname } from 'next/navigation';
 
-const guestRoutes = [
+const learnerRoutes = [
 	{
 		icon: Layout,
 		label: 'Dashboard',
@@ -15,6 +15,11 @@ const guestRoutes = [
 		icon: Compass,
 		label: 'Browse',
 		href: '/search',
+	},
+	{
+		icon: ActivitySquare,
+		label: 'Personalization',
+		href: '/personalization',
 	},
 ];
 
@@ -36,11 +41,11 @@ const SidebarRoutes = () => {
 
 	const isTeacherPage = pathname?.startsWith('/teacher');
 
-	const routes = isTeacherPage ? teacherRoutes : guestRoutes;
+	const routes = isTeacherPage ? teacherRoutes : learnerRoutes;
 
 	return (
 		<div className="flex flex-col w-full">
-			{routes.map((route, index) => {
+			{routes.map((route) => {
 				return (
 					<SidebarItem
 						key={route.href}
