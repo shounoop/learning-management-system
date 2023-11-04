@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 interface CoursesListProps {
 	items: CourseWithProgressWithCategory[];
-	size?: 'sm' | 'md' | 'lg';
+	size?: 'sm' | 'lg';
 }
 
 const CoursesList = ({ items, size }: CoursesListProps) => {
