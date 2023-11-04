@@ -45,7 +45,7 @@ export const getCourses = async ({
 					if (course.purchases.length === 0) {
 						return {
 							...course,
-							progress: 0,
+							progress: null,
 						};
 					}
 

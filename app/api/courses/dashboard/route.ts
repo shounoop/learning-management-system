@@ -1,4 +1,3 @@
-import { getProgress } from '@/actions/get-progress';
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { Category, Chapter, Course } from '@prisma/client';
