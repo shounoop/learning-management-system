@@ -2,15 +2,15 @@ import { db } from '@/lib/db';
 import { Category, Chapter, Course } from '@prisma/client';
 import { getProgress } from './get-progress';
 
-type CoursesWithProgressWithCategory = Course & {
+type CourseWithProgressWithCategory = Course & {
 	category: Category;
 	chapters: Chapter[];
 	progress: number | null;
 };
 
 type DashboardCourses = {
-	completedCourses: any[];
-	coursesInProgress: any[];
+	completedCourses: CourseWithProgressWithCategory[];
+	coursesInProgress: CourseWithProgressWithCategory[];
 };
 
 export const getDashboardCourses = async (
@@ -31,7 +31,7 @@ export const getDashboardCourses = async (
 
 		const courses = purchasedCourses.map(
 			(purchasedCourse) => purchasedCourse.course
-		) as CoursesWithProgressWithCategory[];
+		) as CourseWithProgressWithCategory[];
 
 		for (let course of courses) {
 			const progress = await getProgress(userId, course.id);

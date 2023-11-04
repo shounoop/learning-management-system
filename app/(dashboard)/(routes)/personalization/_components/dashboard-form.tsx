@@ -15,14 +15,18 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { DASHBOARD_ITEM_ID } from '@/constants/dashboard-item-id';
 
 const items = [
 	{
-		id: 'in-progress',
+		id: DASHBOARD_ITEM_ID.inProgress,
 		label: 'In Progress',
 	},
 	{
-		id: 'completed',
+		id: DASHBOARD_ITEM_ID.completed,
 		label: 'Completed',
 	},
 ] as const;
@@ -34,24 +38,47 @@ const FormSchema = z.object({
 });
 
 const DashboardForm = () => {
+	const [isSaving, setIsSaving] = useState(false);
+
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
-			items: ['in-progress', 'completed'],
+			items: [],
 		},
 	});
 
-	function onSubmit(data: z.infer<typeof FormSchema>) {
-		// console.log(JSON.stringify(data));
-		// console.log(JSON.stringify(data, null, 4));
-		// console.log(data);
+	const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+		try {
+			setIsSaving(true);
 
-		const stringnified = JSON.stringify(data);
-		console.log('stringnified', stringnified);
+			const stringnifiedItems = JSON.stringify(data.items);
 
-		const parsed = JSON.parse(stringnified);
-		console.log('parsed', parsed);
-	}
+			await axios.put(`/api/personalization`, { dashboard: stringnifiedItems });
+
+			toast.success('Dashboard updated successfully.');
+		} catch (error) {
+			console.log(error);
+			toast.error('Something went wrong.');
+		} finally {
+			setIsSaving(false);
+		}
+	};
+
+	useEffect(() => {
+		(async () => {
+			try {
+				const res = await axios.get(`/api/personalization`);
+
+				if (res?.data?.dashboard) {
+					const parsed = JSON.parse(res.data.dashboard);
+
+					form.setValue('items', parsed);
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		})();
+	}, [form]);
 
 	return (
 		<div className="mt-6 border bg-slate-100 rounded-md p-4">
@@ -64,6 +91,7 @@ const DashboardForm = () => {
 							<FormItem>
 								<div className="mb-4">
 									<FormLabel className="text-base">Dashboard</FormLabel>
+
 									<FormDescription>
 										Select the items you want to display in the dashboard.
 									</FormDescription>
@@ -108,7 +136,9 @@ const DashboardForm = () => {
 						)}
 					/>
 
-					<Button type="submit">Save</Button>
+					<Button disabled={isSaving} type="submit">
+						Save
+					</Button>
 				</form>
 			</Form>
 		</div>
