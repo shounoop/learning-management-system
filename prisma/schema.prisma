@@ -27,6 +27,8 @@ model Course {
   chapters    Chapter[]
   attachments Attachment[]
   purchases   Purchase[]
+  Question    Question[]
+  Exam        Exam[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -148,4 +150,51 @@ model Personalization {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Answer {
+  id    String @id @default(uuid())
+  label String @db.Text
+  value String @db.Text
+
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([questionId])
+}
+
+model Question {
+  id            String @id @default(uuid())
+  question      String @db.Text
+  correctAnswer String @db.Text
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  Answer Answer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+
+model Exam {
+  id        String  @id @default(uuid())
+  userId    String
+  answers   String  @db.Text
+  exactRate Float
+  isPerfect Boolean @default(false)
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, courseId])
+  @@index([courseId])
 }
