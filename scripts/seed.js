@@ -60,14 +60,29 @@ async function main() {
 			).map((course) => course.id);
 
 			for (let i = 0; i < courseIds.length; i++) {
+				const courseId = courseIds[i];
+
+				const chapterIds = (
+					await database.chapter.findMany({
+						where: {
+							courseId,
+						},
+						select: { id: true },
+					})
+				).map((chapter) => chapter.id);
+
 				const data = QUESTIONS.map((question) => {
+					const chapterId =
+						chapterIds[Math.floor(Math.random() * chapterIds.length)];
+
+					const correctAnswer =
+						CORRECT_ANSWERS[Math.floor(Math.random() * CORRECT_ANSWERS.length)];
+
 					return {
-						courseId: courseIds[i],
+						courseId,
+						chapterId,
 						question,
-						correctAnswer:
-							CORRECT_ANSWERS[
-								Math.floor(Math.random() * CORRECT_ANSWERS.length)
-							],
+						correctAnswer,
 					};
 				});
 

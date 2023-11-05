@@ -28,8 +28,8 @@ model Course {
   chapters    Chapter[]
   attachments Attachment[]
   purchases   Purchase[]
-  question    Question[]
-  exam        Exam[]
+  questions   Question[]
+  exams       Exam[]
 
   @@index([categoryId])
   @@fulltext([title])
@@ -68,8 +68,8 @@ model Chapter {
   updatedAt   DateTime @updatedAt
 
   userProgresses UserProgress[]
-  note           Note[]
-  question       Question?
+  notes          Note[]
+  questions      Question[]
   muxData        MuxData?
   course         Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
@@ -158,16 +158,17 @@ model Question {
   id            String   @id @default(uuid())
   question      String   @db.Text
   correctAnswer String   @db.Text
-  courseId      String   @unique
-  chapterId     String   @unique
+  courseId      String
+  chapterId     String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   answer  Answer[]
-  chapter Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  chapter Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
   @@index([courseId])
+  @@index([chapterId])
 }
 
 model Exam {
