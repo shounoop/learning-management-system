@@ -28,6 +28,19 @@ const CORRECT_ANSWERS = [
 	'abcd',
 ];
 
+const ANSWERS = [
+	'By doing it right now and not later on in the future',
+	'Say no more fam I got you fam',
+	'Somehow, It is easy for me to learn',
+	'Somehow not possible',
+	'I am not sure if I can do it, but I will try',
+	'The best way to learn programming is to do it right now and not later on in the future',
+	'Nothing is impossible, and I will do it right now and not later on in the future',
+	'Programming is hard, and I will do it right now and not later on in the future',
+	'Programming is hard, and I will do it right now and not later on in the future, and I will do it right now and not later on in the future',
+	'They say that programming is hard, and I will do it right now and not later on in the future',
+];
+
 async function main() {
 	const seedingCategories = async () => {
 		try {
@@ -99,28 +112,23 @@ async function main() {
 
 	const seedingAnswers = async () => {
 		try {
-			const questionIds = await database.question.findMany({
-				select: { id: true },
-			});
+			const questionIds = (
+				await database.question.findMany({
+					select: { id: true },
+				})
+			).map((question) => question.id);
 
-			const data = questionIds.map((questionId) => {
-				return [
-					{
+			for (let questionId of questionIds) {
+				const data = ['a', 'b', 'c', 'd'].map((answer) => {
+					return {
+						value: answer,
+						label: ANSWERS[Math.floor(Math.random() * ANSWERS.length)],
 						questionId,
-						value: 'a',
-						label: 'By doing it right now and not later on in the future',
-					},
-					{ questionId, value: 'b', label: 'Say no more fam I got you fam' },
-					{
-						questionId,
-						value: 'c',
-						label: 'Somehow, It is easy for me to learn',
-					},
-					{ questionId, value: 'd', label: 'Somehow not possible' },
-				];
-			});
+					};
+				});
 
-			await database.answer.createMany({ data });
+				await database.answer.createMany({ data });
+			}
 
 			console.log('Answers seeded successfully');
 		} catch (error) {
@@ -131,7 +139,7 @@ async function main() {
 	};
 
 	// seedingCategories();
-	seedingQuestions();
+	// seedingQuestions();
 	// seedingAnswers();
 }
 
