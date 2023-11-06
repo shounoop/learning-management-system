@@ -18,36 +18,39 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { QuestionWithAnswers } from '@/app/api/courses/[courseId]/questions/route';
 
-// const items = [
-// 	{
-// 		id: 'recents',
-// 		label: 'Recents',
-// 	},
-// 	{
-// 		id: 'home',
-// 		label: 'Home',
-// 	},
-// 	{
-// 		id: 'applications',
-// 		label: 'Applications',
-// 	},
-// ] as const;
-
-const FormSchema = z.object({
-	items: z.array(z.string()).refine((value) => value.some((item) => item), {
-		message: 'You have to select at least one item.',
-	}),
-});
-
 const ExamPage = ({ params }: { params: { courseId: string } }) => {
 	// useState
 	const [questions, setQuestions] = useState<QuestionWithAnswers[]>();
 
+	const [object, setOjbect] = useState({
+		items1: z.array(z.string()).refine((value) => value.some((item) => item), {
+			message: 'You have to select at least one item.',
+		}),
+		items2: z.array(z.string()).refine((value) => value.some((item) => item), {
+			message: 'You have to select at least one item.',
+		}),
+		items3: z.array(z.string()).refine((value) => value.some((item) => item), {
+			message: 'You have to select at least one item.',
+		}),
+		items4: z.array(z.string()).refine((value) => value.some((item) => item), {
+			message: 'You have to select at least one item.',
+		}),
+		items5: z.array(z.string()).refine((value) => value.some((item) => item), {
+			message: 'You have to select at least one item.',
+		}),
+	});
+
+	const FormSchema = z.object(object);
+
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
-		// defaultValues: {
-		// 	items: ['recents', 'home'],
-		// },
+		defaultValues: {
+			items1: [],
+			items2: [],
+			items3: [],
+			items4: [],
+			items5: [],
+		},
 	});
 
 	// useEffect
@@ -59,7 +62,9 @@ const ExamPage = ({ params }: { params: { courseId: string } }) => {
 				);
 
 				if (res.data) {
-					setQuestions(res.data);
+					const resQuestions = res.data as QuestionWithAnswers[];
+
+					setQuestions(resQuestions);
 				}
 			} catch (error) {
 				console.log(error);
@@ -69,10 +74,37 @@ const ExamPage = ({ params }: { params: { courseId: string } }) => {
 
 	// function
 	function onSubmit(data: z.infer<typeof FormSchema>) {
-		console.log(JSON.stringify(data, null, 2));
-	}
+		if (!questions) return;
 
-	console.log('questions', questions);
+		const answers = [
+			data.items1.sort().reduce((acc, cur) => acc + cur, ''),
+			data.items2.sort().reduce((acc, cur) => acc + cur, ''),
+			data.items3.sort().reduce((acc, cur) => acc + cur, ''),
+			data.items4.sort().reduce((acc, cur) => acc + cur, ''),
+			data.items5.sort().reduce((acc, cur) => acc + cur, ''),
+		];
+
+		const exactRate =
+			(questions.reduce((acc, cur, index) => {
+				if (cur.correctAnswer === answers[index]) {
+					return acc + 1;
+				}
+
+				return acc;
+			}, 0) /
+				questions.length) *
+			100;
+
+		const isPerfect = exactRate === 100;
+
+		(async () => {
+			await axios.put(`/api/courses/${params.courseId}/exam`, {
+				answers: JSON.stringify(answers),
+				exactRate,
+				isPerfect,
+			});
+		})();
+	}
 
 	return (
 		<div className="flex flex-col max-w-4xl mx-auto pb-20">
@@ -87,7 +119,14 @@ const ExamPage = ({ params }: { params: { courseId: string } }) => {
 							<FormField
 								key={question.id}
 								control={form.control}
-								name="items"
+								name={
+									`items${index + 1}` as
+										| 'items1'
+										| 'items2'
+										| 'items3'
+										| 'items4'
+										| 'items5'
+								}
 								render={() => {
 									const answers = question.answers ? [...question.answers] : [];
 
@@ -108,7 +147,14 @@ const ExamPage = ({ params }: { params: { courseId: string } }) => {
 												<FormField
 													key={item.id}
 													control={form.control}
-													name="items"
+													name={
+														`items${index + 1}` as
+															| 'items1'
+															| 'items2'
+															| 'items3'
+															| 'items4'
+															| 'items5'
+													}
 													render={({ field }) => {
 														return (
 															<FormItem
