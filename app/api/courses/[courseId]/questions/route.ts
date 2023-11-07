@@ -1,9 +1,12 @@
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs';
-import { Answer, Question } from '@prisma/client';
+import { Answer, Chapter, Question } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
-export type QuestionWithAnswers = Question & { answers?: Answer[] };
+export type QuestionWithAnswers = Question & {
+	answers?: Answer[];
+	chapter: Chapter;
+};
 
 export async function GET(
 	req: Request,
@@ -19,6 +22,9 @@ export async function GET(
 		const questions = await db.question.findMany({
 			where: {
 				courseId: params.courseId,
+			},
+			include: {
+				chapter: true,
 			},
 		});
 
