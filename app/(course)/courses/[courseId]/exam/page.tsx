@@ -17,10 +17,14 @@ import {
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { QuestionWithAnswers } from '@/app/api/courses/[courseId]/questions/route';
+import ExamResultsModal from '@/components/modals/exam-results-modal';
+import { Chapter } from '@prisma/client';
 
 const ExamPage = ({ params }: { params: { courseId: string } }) => {
 	// useState
 	const [questions, setQuestions] = useState<QuestionWithAnswers[]>();
+	const [chapters, setChapters] = useState<Chapter[]>([]);
+	const [exactRate, setExactRate] = useState(0);
 
 	const [object, setOjbect] = useState({
 		items1: z.array(z.string()).refine((value) => value.some((item) => item), {
@@ -84,26 +88,32 @@ const ExamPage = ({ params }: { params: { courseId: string } }) => {
 			data.items5.sort().reduce((acc, cur) => acc + cur, ''),
 		];
 
-		const exactRate =
-			(questions.reduce((acc, cur, index) => {
-				if (cur.correctAnswer === answers[index]) {
-					return acc + 1;
+		let newExactRate = 0;
+		const needToLearnChapterIds: string[] = [];
+		const newChapters: Chapter[] = [];
+
+		questions.forEach((question, index) => {
+			if (question.correctAnswer === answers[index]) {
+				newExactRate += (1 / questions.length) * 100;
+			} else {
+				if (!needToLearnChapterIds.includes(question.chapterId)) {
+					needToLearnChapterIds.push(question.chapterId);
+
+					newChapters.push(question.chapter);
 				}
+			}
+		});
 
-				return acc;
-			}, 0) /
-				questions.length) *
-			100;
+		setChapters(newChapters);
+		setExactRate(newExactRate);
 
-		const isPerfect = exactRate === 100;
-
-		(async () => {
-			await axios.put(`/api/courses/${params.courseId}/exam`, {
-				answers: JSON.stringify(answers),
-				exactRate,
-				isPerfect,
-			});
-		})();
+		// (async () => {
+		// 	await axios.put(`/api/courses/${params.courseId}/exam`, {
+		// 		answers: JSON.stringify(answers),
+		// 		exactRate,
+		// 		isPerfect: exactRate === 100,
+		// 	});
+		// })();
 	}
 
 	return (
@@ -194,7 +204,13 @@ const ExamPage = ({ params }: { params: { courseId: string } }) => {
 							/>
 						))}
 
-						<Button type="submit">Submit</Button>
+						<ExamResultsModal
+							exactRate={exactRate}
+							courseId={params.courseId}
+							chapters={chapters}
+						>
+							<Button type="submit">Submit</Button>
+						</ExamResultsModal>
 					</form>
 				</Form>
 			</div>
