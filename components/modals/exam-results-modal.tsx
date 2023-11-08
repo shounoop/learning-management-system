@@ -50,24 +50,26 @@ const ExamResultsModal = ({
 							</p>
 						</div>
 
-						<div>
-							<p className="mt-4 text-base font-semibold text-gray-800">
-								Chapters you should re-study to consolidate your knowledge more
-								firmly:
-							</p>
+						{chapters?.length > 0 && (
+							<div>
+								<p className="mt-4 text-base font-semibold text-gray-800">
+									Chapters you should re-study to consolidate your knowledge
+									more firmly:
+								</p>
 
-							{chapters.map((chapter) => (
-								<div key={chapter.id}>
-									•{' '}
-									<Link
-										className="text-base font-medium text-blue-500 hover:underline"
-										href={`/courses/${courseId}/chapters/${chapter.id}`}
-									>
-										{chapter.title}
-									</Link>
-								</div>
-							))}
-						</div>
+								{chapters.map((chapter) => (
+									<div key={chapter.id}>
+										•{' '}
+										<Link
+											className="text-base font-medium text-blue-500 hover:underline"
+											href={`/courses/${courseId}/chapters/${chapter.id}`}
+										>
+											{chapter.title}
+										</Link>
+									</div>
+								))}
+							</div>
+						)}
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 
