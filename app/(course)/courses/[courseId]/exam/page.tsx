@@ -19,6 +19,7 @@ import axios from 'axios';
 import { QuestionWithAnswers } from '@/app/api/courses/[courseId]/questions/route';
 import ExamResultsModal from '@/components/modals/exam-results-modal';
 import { Chapter } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 
 const ExamPage = ({ params }: { params: { courseId: string } }) => {
 	// useState
@@ -26,7 +27,9 @@ const ExamPage = ({ params }: { params: { courseId: string } }) => {
 	const [chapters, setChapters] = useState<Chapter[]>([]);
 	const [exactRate, setExactRate] = useState(0);
 
-	const [object, setOjbect] = useState({
+	const router = useRouter();
+
+	const FormSchema = z.object({
 		items1: z.array(z.string()).refine((value) => value.some((item) => item), {
 			message: 'You have to select at least one item.',
 		}),
@@ -43,8 +46,6 @@ const ExamPage = ({ params }: { params: { courseId: string } }) => {
 			message: 'You have to select at least one item.',
 		}),
 	});
-
-	const FormSchema = z.object(object);
 
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
@@ -104,17 +105,44 @@ const ExamPage = ({ params }: { params: { courseId: string } }) => {
 			}
 		});
 
-		setChapters(newChapters);
+		setChapters(
+			newChapters.sort((a, b) => {
+				const date1 = new Date(a.updatedAt);
+				const date2 = new Date(b.updatedAt);
+
+				return date2.getUTCMilliseconds() - date1.getUTCMilliseconds();
+			})
+		);
 		setExactRate(newExactRate);
 
-		// (async () => {
-		// 	await axios.put(`/api/courses/${params.courseId}/exam`, {
-		// 		answers: JSON.stringify(answers),
-		// 		exactRate,
-		// 		isPerfect: exactRate === 100,
-		// 	});
-		// })();
+		(async () => {
+			await axios.put(`/api/courses/${params.courseId}/exam`, {
+				answers: JSON.stringify(answers),
+				exactRate,
+				isPerfect: exactRate === 100,
+			});
+		})();
 	}
+
+	const onConfirm = async () => {
+		try {
+			for (let chapter of chapters) {
+				await axios.put(
+					`/api/courses/${params.courseId}/chapters/${chapter.id}/progress`,
+					{ isCompleted: false }
+				);
+			}
+
+			if (chapters?.[0]) {
+				router.push(`/courses/${params.courseId}/chapters/${chapters[0].id}`);
+			}
+		} catch (error) {
+			console.log(
+				'ERROR PUT /api/courses/[courseId]/chapters/[chapterId]/progress',
+				error
+			);
+		}
+	};
 
 	return (
 		<div className="flex flex-col max-w-4xl mx-auto pb-20">
@@ -208,6 +236,7 @@ const ExamPage = ({ params }: { params: { courseId: string } }) => {
 							exactRate={exactRate}
 							courseId={params.courseId}
 							chapters={chapters}
+							onConfirm={onConfirm}
 						>
 							<Button type="submit">Submit</Button>
 						</ExamResultsModal>
