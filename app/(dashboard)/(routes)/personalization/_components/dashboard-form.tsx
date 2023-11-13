@@ -81,7 +81,7 @@ const DashboardForm = () => {
 	}, [form]);
 
 	return (
-		<div className="mt-6 border bg-slate-100 rounded-md p-4">
+		<div className="mt-6 border bg-slate-100 dark:bg-transparent rounded-md p-4">
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 					<FormField
