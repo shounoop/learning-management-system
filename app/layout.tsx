@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google';
 import { ToastProvider } from '@/components/providers/toast-provider';
 import ConfettiProvider from '@/components/providers/confetti-provider';
 import { ThemeProvider } from '@/components/theme-provider';
+import FacebookMessenger from '@/components/facebook-messenger';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -35,6 +36,8 @@ export default function RootLayout({
 						{children}
 					</ThemeProvider>
 				</body>
+
+				<FacebookMessenger />
 			</html>
 		</ClerkProvider>
 	);
