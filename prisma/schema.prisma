@@ -76,10 +76,15 @@ model Chapter {
   @@index([courseId])
 }
 
+// MuxData is the data that is stored in Mux Video
 model MuxData {
-  id         String  @id @default(uuid())
-  assetId    String
-  chapterId  String  @unique
+  id String @id @default(uuid())
+
+  // assetId is the ID of the asset in Mux Video that contains the video (asset is a container for a video)
+  assetId   String
+  chapterId String @unique
+
+  // playbackId is the ID of the playback in Mux Video that contains the video (playback is a playable video)
   playbackId String?
 
   chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
@@ -112,9 +117,12 @@ model Purchase {
   @@index([courseId])
 }
 
+// StripeCustomer is the data of the customer that is stored in Stripe
 model StripeCustomer {
-  id               String   @id @default(uuid())
-  userId           String   @unique
+  id     String @id @default(uuid())
+  userId String @unique
+
+  // stripeCustomerId is the ID of the customer in Stripe
   stripeCustomerId String   @unique
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt

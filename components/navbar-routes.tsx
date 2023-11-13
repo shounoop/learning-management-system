@@ -7,6 +7,7 @@ import { LogOut } from 'lucide-react';
 import Link from 'next/link';
 import SearchInput from './search-input';
 import { isTeacher } from '@/lib/teacher';
+import { ModeToggle } from './mode-toggle';
 
 const NavbarRoutes = () => {
 	const { userId } = useAuth();
@@ -26,6 +27,10 @@ const NavbarRoutes = () => {
 			)}
 
 			<div className="flex gap-x-2 ml-auto">
+				<div className="pr-6">
+					<ModeToggle />
+				</div>
+
 				{isTeacherPage || isCoursePage ? (
 					<Link href="/">
 						<Button size={'sm'} variant={'ghost'}>
