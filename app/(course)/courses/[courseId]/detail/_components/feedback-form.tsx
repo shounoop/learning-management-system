@@ -19,7 +19,6 @@ import { Course } from '@prisma/client';
 import { Editor } from '@/components/editor';
 
 interface FeedbackFormProps {
-	initialData: Course;
 	courseId: string;
 }
 
@@ -41,7 +40,7 @@ const FeedbackForm = ({ courseId }: FeedbackFormProps) => {
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
-			await axios.post(`/api/courses/${courseId}/feedback`, values);
+			await axios.post(`/api/courses/${courseId}/feedbacks`, values);
 
 			toast.success('Feedback saved successfully');
 			router.refresh();
