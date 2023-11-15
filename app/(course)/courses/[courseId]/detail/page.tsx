@@ -1,33 +1,31 @@
+'use client';
+
 import { Preview } from '@/components/preview';
 import { Button } from '@/components/ui/button';
-import { db } from '@/lib/db';
 import { cn } from '@/lib/utils';
-import { auth } from '@clerk/nextjs';
 import { Star } from 'lucide-react';
 import Image from 'next/image';
-import { redirect } from 'next/navigation';
 import Feedback from './_components/feedback';
 import FeedbackForm from './_components/feedback-form';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const Detail = async ({ params }: { params: { courseId: string } }) => {
-	const { userId } = auth();
+const Detail = ({ params }: { params: { courseId: string } }) => {
+	const { courseId } = params;
 
-	if (!userId) {
-		return redirect('/');
-	}
+	const [course, setCourse] = useState<any>(null);
 
-	const course = await db.course.findUnique({
-		where: {
-			id: params.courseId,
-		},
-		include: {
-			chapters: {
-				where: { isPublished: true },
-				include: { userProgresses: { where: { userId } } },
-				orderBy: { position: 'asc' },
-			},
-		},
-	});
+	useEffect(() => {
+		(async () => {
+			try {
+				const res = await axios.get(`/api/courses/${courseId}`);
+
+				setCourse(res.data);
+			} catch (error) {
+				console.log(error);
+			}
+		})();
+	}, [courseId]);
 
 	return (
 		<div className="p-8">
