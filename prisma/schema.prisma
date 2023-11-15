@@ -30,6 +30,7 @@ model Course {
   purchases   Purchase[]
   questions   Question[]
   exams       Exam[]
+  Feedback    Feedback[]
 
   @@index([categoryId])
   @@fulltext([title])
@@ -188,6 +189,18 @@ model Exam {
   courseId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+}
+
+model Feedback {
+  id       String @id @default(uuid())
+  userId   String
+  courseId String
+  content  String
 
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
