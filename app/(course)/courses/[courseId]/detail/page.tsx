@@ -1,7 +1,9 @@
 import { Preview } from '@/components/preview';
+import { Button } from '@/components/ui/button';
 import { db } from '@/lib/db';
 import { cn } from '@/lib/utils';
 import { auth } from '@clerk/nextjs';
+import { Star } from 'lucide-react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 
@@ -32,7 +34,9 @@ const Detail = async ({ params }: { params: { courseId: string } }) => {
 			"
 			>
 				<div>
-					<div className="px-[15px] py-[12px] text-3xl font-bold">{course?.title}</div>
+					<div className="px-[15px] py-[12px] text-3xl font-bold">
+						{course?.title}
+					</div>
 
 					<div
 						className={cn(
@@ -44,21 +48,34 @@ const Detail = async ({ params }: { params: { courseId: string } }) => {
 
 						{course?.description && <Preview value={course?.description} />}
 					</div>
+
+					<Button className="mt-4 w-full">Continue Studying</Button>
 				</div>
 
 				<div>
-					<Image
-						src={`https://images.unsplash.com/photo-1693328604570-ade5a23ce2cd?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`}
-						alt="course-image"
-						width={500}
-						height={500}
-					/>
+					{course?.imageUrl && (
+						<Image
+							className="rounded-md shadow-md object-cover "
+							src={course.imageUrl}
+							alt="course-image"
+							width={500}
+							height={350}
+						/>
+					)}
 
-					<div>
-						<div>4.9</div>
-						<div>{`(105 đánh giá)`}</div>
+					<div className="flex mt-6 items-center">
+						<div className="flex items-center text-orange-400 font-bold text-xl">
+							{`4.9/5`}
+							<Star className="w-4 h-4 ml-1 fill-current" />
+						</div>
+
+						<div className="ml-3 text-sm text-slate-500">{`(105 đánh giá)`}</div>
 					</div>
 				</div>
+			</div>
+
+			<div>
+				<div className="text-2xl font-bold mt-8 mb-4">Course Evaluation</div>
 			</div>
 		</div>
 	);
