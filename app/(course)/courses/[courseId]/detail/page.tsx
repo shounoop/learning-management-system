@@ -12,7 +12,7 @@ import axios from 'axios';
 import { Feedback as Feedback } from '@prisma/client';
 import { useAuth } from '@clerk/nextjs';
 
-const Detail = ({ params }: { params: { courseId: string } }) => {
+const CourseDetailPage = ({ params }: { params: { courseId: string } }) => {
 	const { courseId } = params;
 
 	const { userId } = useAuth();
@@ -57,7 +57,7 @@ const Detail = ({ params }: { params: { courseId: string } }) => {
 
 	return (
 		<div className="p-8">
-			<div className="grid grid-cols-1 sm:grid-cols-2 gap-6 center-content">
+			<div className="grid grid-cols-1 sm:grid-cols-2 gap-8 center-content">
 				<div>
 					<div className="px-[15px] py-[12px] text-3xl font-bold">
 						{course?.title}
@@ -74,18 +74,21 @@ const Detail = ({ params }: { params: { courseId: string } }) => {
 						{course?.description && <Preview value={course?.description} />}
 					</div>
 
-					<Button className="mt-4 w-full">Continue Studying</Button>
+					<div className="px-4">
+						<Button className="mt-4 w-full">Continue Studying</Button>
+					</div>
 				</div>
 
 				<div>
 					{course?.imageUrl && (
-						<Image
-							className="rounded-md shadow-md object-cover "
-							src={course.imageUrl}
-							alt="course-image"
-							width={500}
-							height={350}
-						/>
+						<div className="w-full h-[350px] relative">
+							<Image
+								className="rounded-md shadow-md object-cover "
+								src={course.imageUrl}
+								alt="course-image"
+								fill
+							/>
+						</div>
 					)}
 
 					<div className="flex mt-6 items-center">
@@ -99,7 +102,7 @@ const Detail = ({ params }: { params: { courseId: string } }) => {
 				</div>
 			</div>
 
-			<div>
+			<div className="mt-12 pl-4">
 				<div className="text-2xl font-bold mt-8 mb-4">Feedbacks</div>
 
 				<div className="grid grid-cols-1 gap-y-3">
@@ -121,4 +124,4 @@ const Detail = ({ params }: { params: { courseId: string } }) => {
 	);
 };
 
-export default Detail;
+export default CourseDetailPage;
