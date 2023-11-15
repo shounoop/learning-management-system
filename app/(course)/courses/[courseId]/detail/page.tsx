@@ -1,40 +1,63 @@
+'use client';
+
 import { Preview } from '@/components/preview';
 import { Button } from '@/components/ui/button';
-import { db } from '@/lib/db';
 import { cn } from '@/lib/utils';
-import { auth } from '@clerk/nextjs';
 import { Star } from 'lucide-react';
 import Image from 'next/image';
-import { redirect } from 'next/navigation';
-import Feedback from './_components/feedback';
+import FeedbackItem from './_components/feedback-item';
 import FeedbackForm from './_components/feedback-form';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Feedback as Feedback } from '@prisma/client';
+import { useAuth } from '@clerk/nextjs';
 
-const Detail = async ({ params }: { params: { courseId: string } }) => {
-	const { userId } = auth();
+const Detail = ({ params }: { params: { courseId: string } }) => {
+	const { courseId } = params;
 
-	if (!userId) {
-		return redirect('/');
-	}
+	const { userId } = useAuth();
 
-	const course = await db.course.findUnique({
-		where: {
-			id: params.courseId,
-		},
-		include: {
-			chapters: {
-				where: { isPublished: true },
-				include: { userProgresses: { where: { userId } } },
-				orderBy: { position: 'asc' },
-			},
-		},
-	});
+	const [course, setCourse] = useState<any>(null);
+	const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+	const [isFeedbacked, setIsFeedbacked] = useState(false);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				const res = await axios.get(`/api/courses/${courseId}`);
+
+				setCourse(res.data);
+			} catch (error) {
+				console.log(error);
+			}
+		})();
+	}, [courseId]);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				const res = await axios.get(`/api/courses/${courseId}/feedbacks`);
+
+				setFeedbacks(res.data);
+			} catch (error) {
+				console.log(error);
+			}
+		})();
+	}, [courseId]);
+
+	useEffect(() => {
+		if (!feedbacks.length || !userId) return;
+
+		feedbacks.forEach((feedback) => {
+			if (feedback.userId === userId) {
+				setIsFeedbacked(true);
+			}
+		});
+	}, [feedbacks, userId]);
 
 	return (
 		<div className="p-8">
-			<div
-				className="grid grid-cols-1 sm:grid-cols-2 gap-6 center-content
-			"
-			>
+			<div className="grid grid-cols-1 sm:grid-cols-2 gap-6 center-content">
 				<div>
 					<div className="px-[15px] py-[12px] text-3xl font-bold">
 						{course?.title}
@@ -67,11 +90,11 @@ const Detail = async ({ params }: { params: { courseId: string } }) => {
 
 					<div className="flex mt-6 items-center">
 						<div className="flex items-center text-orange-400 font-bold text-xl">
-							{`4.9/5`}
+							{`4/5`}
 							<Star className="w-4 h-4 ml-1 fill-current" />
 						</div>
 
-						<div className="ml-3 text-sm text-slate-500">{`(105 đánh giá)`}</div>
+						<div className="ml-3 text-sm text-slate-500">{`(${feedbacks.length} đánh giá)`}</div>
 					</div>
 				</div>
 			</div>
@@ -80,12 +103,19 @@ const Detail = async ({ params }: { params: { courseId: string } }) => {
 				<div className="text-2xl font-bold mt-8 mb-4">Feedbacks</div>
 
 				<div className="grid grid-cols-1 gap-y-3">
-					<Feedback course={course} />
-
-					<Feedback course={course} />
+					{feedbacks.map((feedback, index) => (
+						<FeedbackItem
+							key={feedback.id}
+							content={feedback.content}
+							fullName={feedback.fullName}
+							imageUrl={feedback.avatarUrl}
+							rating={5}
+							duration={index + 1}
+						/>
+					))}
 				</div>
 
-				{course && <FeedbackForm initialData={course} courseId={course.id} />}
+				{course && !isFeedbacked && <FeedbackForm courseId={course.id} />}
 			</div>
 		</div>
 	);

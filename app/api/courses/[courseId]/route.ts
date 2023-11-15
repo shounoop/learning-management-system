@@ -76,3 +76,39 @@ export async function PATCH(
 		return new NextResponse('Internal Server Error', { status: 500 });
 	}
 }
+
+export async function GET(
+	req: Request,
+	{ params }: { params: { courseId: string } }
+) {
+	try {
+		const { userId } = auth();
+
+		if (!userId) {
+			return new NextResponse('Unauthorized', { status: 401 });
+		}
+
+		const course = await db.course.findUnique({
+			where: {
+				id: params.courseId,
+			},
+			include: {
+				chapters: {
+					where: { isPublished: true },
+					include: { userProgresses: { where: { userId } } },
+					orderBy: { position: 'asc' },
+				},
+			},
+		});
+
+		if (!course) {
+			return new NextResponse('Unauthorized', { status: 401 });
+		}
+
+		return NextResponse.json(course);
+	} catch (error) {
+		console.log('[ERROR] GET /api/courses/[courseId]', error);
+
+		return new NextResponse('Internal Server Error', { status: 500 });
+	}
+}

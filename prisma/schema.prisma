@@ -197,10 +197,12 @@ model Exam {
 }
 
 model Feedback {
-  id       String @id @default(uuid())
-  userId   String
-  courseId String
-  content  String
+  id        String @id @default(uuid())
+  userId    String
+  courseId  String
+  content   String
+  fullName  String
+  avatarUrl String
 
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
