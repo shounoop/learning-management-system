@@ -9,14 +9,13 @@ const Feedback = ({ course }: FeedbackProps) => {
 	return (
 		<div className="border border-blue-200 rounded-md p-4">
 			<div className="flex">
-				<div>
+				<div className='w-[48px] h-[48px] relative'>
 					{course?.imageUrl && (
 						<Image
 							className="rounded-full shadow-md object-cover"
 							src={course.imageUrl}
 							alt="course-image"
-							width={48}
-							height={48}
+							fill
 						/>
 					)}
 				</div>

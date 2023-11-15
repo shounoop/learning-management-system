@@ -7,6 +7,7 @@ import { Star } from 'lucide-react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import Feedback from './_components/feedback';
+import FeedbackForm from './_components/feedback-form';
 
 const Detail = async ({ params }: { params: { courseId: string } }) => {
 	const { userId } = auth();
@@ -83,6 +84,8 @@ const Detail = async ({ params }: { params: { courseId: string } }) => {
 
 					<Feedback course={course} />
 				</div>
+
+				{course && <FeedbackForm initialData={course} courseId={course.id} />}
 			</div>
 		</div>
 	);
