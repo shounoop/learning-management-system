@@ -20,6 +20,8 @@ import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
 import { Course } from '@prisma/client';
+import { Editor } from '@/components/editor';
+import { Preview } from '@/components/preview';
 
 interface DescriptionFormProps {
 	initialData: Course;
@@ -83,7 +85,11 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
 						!initialData.description && 'text-slate-500 italic'
 					)}
 				>
-					{initialData.description || 'No description'}
+					{!initialData.description && 'No description'}
+
+					{initialData.description && (
+						<Preview value={initialData.description} />
+					)}
 				</p>
 			)}
 
@@ -99,11 +105,7 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Textarea
-											disabled={isSubmitting}
-											placeholder={"e.g. 'This course is about...'"}
-											{...field}
-										/>
+										<Editor {...field} />
 									</FormControl>
 
 									<FormMessage />
