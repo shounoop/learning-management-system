@@ -55,6 +55,11 @@ const CourseDetailPage = ({ params }: { params: { courseId: string } }) => {
 		});
 	}, [feedbacks, userId]);
 
+	const afterSentFeedback = (newFeedback: Feedback) => {
+		setFeedbacks((prev) => [...prev, newFeedback]);
+		setIsFeedbacked(true);
+	};
+
 	return (
 		<div className="p-8">
 			<div className="grid grid-cols-1 sm:grid-cols-2 gap-8 center-content">
@@ -118,7 +123,12 @@ const CourseDetailPage = ({ params }: { params: { courseId: string } }) => {
 					))}
 				</div>
 
-				{course && !isFeedbacked && <FeedbackForm courseId={course.id} />}
+				{course && !isFeedbacked && (
+					<FeedbackForm
+						courseId={course.id}
+						afterSentFeedback={afterSentFeedback}
+					/>
+				)}
 			</div>
 		</div>
 	);
