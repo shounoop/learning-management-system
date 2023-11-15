@@ -1,7 +1,14 @@
 // use client to avoid SSR error
 'use client';
 
-import { ActivitySquare, BarChart, Compass, Heart, Layout, List } from 'lucide-react';
+import {
+	ActivitySquare,
+	BarChart,
+	Compass,
+	Heart,
+	Layout,
+	List,
+} from 'lucide-react';
 import SidebarItem from './sidebar-item';
 import { usePathname } from 'next/navigation';
 
@@ -18,7 +25,7 @@ const learnerRoutes = [
 	},
 	{
 		icon: ActivitySquare,
-		label: 'Personalization',
+		label: 'Customization',
 		href: '/personalization',
 	},
 ];
