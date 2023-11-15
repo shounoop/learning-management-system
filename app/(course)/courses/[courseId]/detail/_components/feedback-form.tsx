@@ -15,18 +15,19 @@ import {
 import { Button } from '@/components/ui/button';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { Course } from '@prisma/client';
 import { Editor } from '@/components/editor';
+import { Feedback } from '@prisma/client';
 
 interface FeedbackFormProps {
 	courseId: string;
+	afterSentFeedback: (newFeedback: Feedback) => void;
 }
 
 const formSchema = z.object({
 	content: z.string(),
 });
 
-const FeedbackForm = ({ courseId }: FeedbackFormProps) => {
+const FeedbackForm = ({ courseId, afterSentFeedback }: FeedbackFormProps) => {
 	const router = useRouter();
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -40,10 +41,13 @@ const FeedbackForm = ({ courseId }: FeedbackFormProps) => {
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
-			await axios.post(`/api/courses/${courseId}/feedbacks`, values);
+			const newFeedback = await axios.post(
+				`/api/courses/${courseId}/feedbacks`,
+				values
+			);
 
 			toast.success('Feedback saved successfully');
-			router.refresh();
+			afterSentFeedback(newFeedback.data);
 		} catch (error) {
 			toast.error('Something went wrong');
 		}
