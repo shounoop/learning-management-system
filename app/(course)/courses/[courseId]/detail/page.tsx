@@ -1,4 +1,6 @@
+import { Preview } from '@/components/preview';
 import { db } from '@/lib/db';
+import { cn } from '@/lib/utils';
 import { auth } from '@clerk/nextjs';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
@@ -26,13 +28,22 @@ const Detail = async ({ params }: { params: { courseId: string } }) => {
 	return (
 		<div className="p-8">
 			<div
-				className="grid grid-cols-1 sm:grid-cols-2 gap-4 center-content
+				className="grid grid-cols-1 sm:grid-cols-2 gap-6 center-content
 			"
 			>
 				<div>
-					<div className="text-2xl font-semibold">{course?.title}</div>
+					<div className="px-[15px] py-[12px] text-3xl font-bold">{course?.title}</div>
 
-					<div>{course?.description}</div>
+					<div
+						className={cn(
+							'text-sm mt-2',
+							!course?.description && 'text-slate-500 italic'
+						)}
+					>
+						{!course?.description && 'No description'}
+
+						{course?.description && <Preview value={course?.description} />}
+					</div>
 				</div>
 
 				<div>
