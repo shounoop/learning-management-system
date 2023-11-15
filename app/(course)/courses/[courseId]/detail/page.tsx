@@ -6,6 +6,7 @@ import { auth } from '@clerk/nextjs';
 import { Star } from 'lucide-react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
+import Feedback from './_components/feedback';
 
 const Detail = async ({ params }: { params: { courseId: string } }) => {
 	const { userId } = auth();
@@ -75,7 +76,13 @@ const Detail = async ({ params }: { params: { courseId: string } }) => {
 			</div>
 
 			<div>
-				<div className="text-2xl font-bold mt-8 mb-4">Course Evaluation</div>
+				<div className="text-2xl font-bold mt-8 mb-4">Feedbacks</div>
+
+				<div className="grid grid-cols-1 gap-y-3">
+					<Feedback course={course} />
+
+					<Feedback course={course} />
+				</div>
 			</div>
 		</div>
 	);
