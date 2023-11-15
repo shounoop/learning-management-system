@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import CourseSidebarItem from './course-sidebar-item';
 import CourseProgress from '@/components/course-progress';
 import CourseSidebarItem2 from './course-sidebar-item-2';
+import CourseSidebarItem3 from './course-sidebar-item-3';
 
 interface CourseSidebarProps {
 	course: Course & {
@@ -42,6 +43,8 @@ const CourseSidebar = async ({ course, progressCount }: CourseSidebarProps) => {
 			</div>
 
 			<div className="flex flex-col w-full">
+				<CourseSidebarItem3 courseId={course.id} label="Course Information" />
+
 				{course.chapters.map((chapter) => (
 					<CourseSidebarItem
 						key={chapter.id}
