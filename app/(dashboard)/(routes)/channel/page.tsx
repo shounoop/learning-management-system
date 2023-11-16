@@ -1,11 +1,13 @@
+'use client';
 import { MediaRoom } from '@/components/media-room';
+import { useAuth } from '@clerk/nextjs';
 
 const Channel = () => {
-	return (
-		<div className='h-full'>
-			{/* <MediaRoom chatId="test" video={false} audio={true} /> */}
+	const { userId } = useAuth();
 
-			<MediaRoom chatId="test" video={true} audio={true} />
+	return (
+		<div className="h-full">
+			{userId && <MediaRoom chatId={'general'} video={true} audio={true} />}
 		</div>
 	);
 };
