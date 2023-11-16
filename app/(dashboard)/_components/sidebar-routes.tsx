@@ -28,6 +28,11 @@ const learnerRoutes = [
 		label: 'Customization',
 		href: '/personalization',
 	},
+	{
+		icon: ActivitySquare,
+		label: 'Video Call',
+		href: '/channel',
+	},
 ];
 
 const teacherRoutes = [
