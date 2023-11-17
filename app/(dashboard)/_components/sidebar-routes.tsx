@@ -8,6 +8,7 @@ import {
 	Heart,
 	Layout,
 	List,
+	Phone,
 } from 'lucide-react';
 import SidebarItem from './sidebar-item';
 import { usePathname } from 'next/navigation';
@@ -29,7 +30,7 @@ const learnerRoutes = [
 		href: '/personalization',
 	},
 	{
-		icon: ActivitySquare,
+		icon: Phone,
 		label: 'Video Call',
 		href: '/channel',
 	},
