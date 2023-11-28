@@ -9,6 +9,9 @@ import axios from 'axios';
 import { STORAGE_KEY } from '@/constants/storage';
 import { DASHBOARD_ITEM_ID } from '@/constants/dashboard-item-id';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@clerk/nextjs';
+import { isTeacher } from '@/lib/teacher';
+import { redirect } from 'next/navigation';
 
 type CourseWithProgressWithCategory = Course & {
 	category: Category;
@@ -17,6 +20,10 @@ type CourseWithProgressWithCategory = Course & {
 };
 
 const Dashboard = () => {
+	const { userId } = useAuth();
+
+	if (isTeacher(userId)) redirect('/teacher/courses');
+
 	// useState
 	const [dashboardSetting, setDashboardSetting] = useState<string[]>();
 	const [completedCourses, setCompletedCourses] =
