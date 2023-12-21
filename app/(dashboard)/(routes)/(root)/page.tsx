@@ -1,10 +1,10 @@
 'use client';
 
 import CoursesList from '@/components/courses-list';
-import { CheckCircle, Clock } from 'lucide-react';
+import { CheckCircle, Clock, LayoutDashboard } from 'lucide-react';
 import InfoCard from './_components/info-card';
 import { useEffect, useState } from 'react';
-import { Category, Chapter, Course } from '@prisma/client';
+import { Category, Chapter, Course, CourseStatistic } from '@prisma/client';
 import axios from 'axios';
 import { STORAGE_KEY } from '@/constants/storage';
 import { DASHBOARD_ITEM_ID } from '@/constants/dashboard-item-id';
@@ -12,6 +12,9 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@clerk/nextjs';
 import { isTeacher } from '@/lib/teacher';
 import { redirect } from 'next/navigation';
+import { IconBadge } from '@/components/icon-badge';
+import { RecommendCourse } from '@/types';
+import RecommendedCourses from '@/components/recommended-courses';
 
 type CourseWithProgressWithCategory = Course & {
 	category: Category;
@@ -24,26 +27,34 @@ const Dashboard = () => {
 
 	if (isTeacher(userId)) redirect('/teacher/courses');
 
-	// useState
 	const [dashboardSetting, setDashboardSetting] = useState<string[]>();
 	const [completedCourses, setCompletedCourses] =
 		useState<CourseWithProgressWithCategory[]>();
 	const [coursesInProgress, setCoursesInProgress] =
 		useState<CourseWithProgressWithCategory[]>();
+	const [recommendedCourses, setRecommendedCourses] =
+		useState<RecommendCourse[]>();
 
-	// useEffect
 	useEffect(() => {
-		setCompletedCourses(
-			JSON.parse(localStorage.getItem(STORAGE_KEY.completedCourses) || '[]')
-		);
+		const setDataFromLocalStorageToStates = () => {
+			setCompletedCourses(
+				JSON.parse(localStorage.getItem(STORAGE_KEY.completedCourses) || '[]')
+			);
 
-		setCoursesInProgress(
-			JSON.parse(localStorage.getItem(STORAGE_KEY.coursesInProgress) || '[]')
-		);
+			setCoursesInProgress(
+				JSON.parse(localStorage.getItem(STORAGE_KEY.coursesInProgress) || '[]')
+			);
 
-		setDashboardSetting(
-			JSON.parse(localStorage.getItem(STORAGE_KEY.dashboardSetting) || '[]')
-		);
+			setDashboardSetting(
+				JSON.parse(localStorage.getItem(STORAGE_KEY.dashboardSetting) || '[]')
+			);
+
+			setRecommendedCourses(
+				JSON.parse(localStorage.getItem(STORAGE_KEY.recommendedCourse) || '[]')
+			);
+		};
+
+		setDataFromLocalStorageToStates();
 	}, []);
 
 	useEffect(() => {
@@ -67,6 +78,23 @@ const Dashboard = () => {
 			}
 		})();
 	}, []);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				const res = await axios.get(`/api/courses/recommend`);
+
+				setRecommendedCourses(res.data);
+
+				localStorage.setItem(
+					STORAGE_KEY.recommendedCourse,
+					JSON.stringify(res.data)
+				);
+			} catch (error) {
+				console.log(error);
+			}
+		})();
+	});
 
 	useEffect(() => {
 		(async () => {
@@ -133,6 +161,18 @@ const Dashboard = () => {
 							/>
 						</div>
 					)}
+			</div>
+
+			<div className="pt-10 !mt-10 border-t-2 border-gray-200 dark:border-gray-700">
+				<div className="pb-6 flex items-center gap-x-2">
+					<IconBadge icon={LayoutDashboard} />
+
+					<h2 className="text-xl">Recommended for you</h2>
+				</div>
+
+				{recommendedCourses && (
+					<RecommendedCourses items={recommendedCourses} />
+				)}
 			</div>
 		</div>
 	);

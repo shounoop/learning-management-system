@@ -37,6 +37,42 @@ export async function POST(req: Request) {
 				userId,
 			},
 		});
+
+		const course = await db.course.findUnique({
+			where: {
+				id: courseId,
+			},
+			select: {
+				category: true,
+			},
+		});
+
+		const courseStatistic = await db.courseStatistic.findUnique({
+			where: {
+				courseId,
+			},
+		});
+
+		if (course?.category) {
+			if (courseStatistic) {
+				await db.courseStatistic.update({
+					where: {
+						courseId,
+					},
+					data: {
+						purchases: courseStatistic.purchases + 1,
+					},
+				});
+			} else {
+				await db.courseStatistic.create({
+					data: {
+						courseId,
+						purchases: 1,
+						categoryId: course.category.id,
+					},
+				});
+			}
+		}
 	} else {
 		return new NextResponse(
 			`Webhook Error: Unhandled event type: ${event.type}`,
