@@ -24,13 +24,14 @@ model Course {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  category    Category?    @relation(fields: [categoryId], references: [id])
-  chapters    Chapter[]
-  attachments Attachment[]
-  purchases   Purchase[]
-  questions   Question[]
-  exams       Exam[]
-  Feedback    Feedback[]
+  category        Category?        @relation(fields: [categoryId], references: [id])
+  chapters        Chapter[]
+  attachments     Attachment[]
+  purchases       Purchase[]
+  questions       Question[]
+  exams           Exam[]
+  Feedback        Feedback[]
+  CourseStatistic CourseStatistic?
 
   @@index([categoryId])
   @@fulltext([title])
@@ -207,5 +208,20 @@ model Feedback {
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@unique([userId, courseId])
+  @@index([courseId])
+}
+
+model CourseStatistic {
+  id         String   @id @default(uuid())
+  courseId   String
+  categoryId String
+  views      Int      @default(0)
+  purchases  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId])
   @@index([courseId])
 }

@@ -5,25 +5,25 @@ import { BookOpen } from 'lucide-react';
 import { formatPrice } from '@/lib/format';
 import CourseProgress from '@/components/course-progress';
 
-interface CourseCardProps {
+interface RecommendedCourseCardProps {
 	id: string;
 	title: string;
 	imageUrl: string;
-	chaptersLength?: number;
 	price: number;
+	views: number;
+	purchases: number;
 	progress?: number | null;
-	category?: string;
 }
 
-const CourseCard = ({
+const RecommendedCourseCard = ({
 	id,
 	title,
 	imageUrl,
-	chaptersLength,
 	price,
 	progress,
-	category,
-}: CourseCardProps) => {
+	views,
+	purchases,
+}: RecommendedCourseCardProps) => {
 	return (
 		<Link href={`/courses/${id}`}>
 			<div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full">
@@ -36,17 +36,19 @@ const CourseCard = ({
 						{title}
 					</div>
 
-					<p className="text-xs text-muted-foreground">{category}</p>
+					{/* <p className="text-xs text-muted-foreground">fdsafasd</p> */}
 
-					<div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
+					<div className="my-3 flex justify-between items-center gap-x-2 text-sm md:text-xs">
 						<div className="flex items-center gap-x-1 text-slate-500">
 							<IconBadge size={'sm'} icon={BookOpen} />
 
-							<span>
-								{`${chaptersLength} ${
-									chaptersLength === 1 ? 'chapter' : 'chapters'
-								}`}
-							</span>
+							<span>{`${views} views`}</span>
+						</div>
+
+						<div className="flex items-center gap-x-1 text-slate-500">
+							<IconBadge size={'sm'} icon={BookOpen} />
+
+							<span>{`${purchases} purchases`}</span>
 						</div>
 					</div>
 
@@ -67,4 +69,4 @@ const CourseCard = ({
 	);
 };
 
-export default CourseCard;
+export default RecommendedCourseCard;
